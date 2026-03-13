@@ -14,26 +14,10 @@
 
 #   curl -L -O "$filesource"  || echo 'error'
 
-while read -rep "Enter destination dir for download: " dir_target 
-do
-  if [[ -d "$dir_target" ]]; then 
-    pushd "$dir_target" &>/dev/null &&
-    break
-  else 
-    echo "Dir does not exist! Try again..." 
-  fi
-done
-
-if [[ "$PWD" == "$dir_target" ]]; then 
-echo "in correct dir..." 
-else 
-echo "error" 
-exit 1 
-fi
-
 while :
 do
- filesource="https://libgen.la/get.php?md5=8638619c05f6042d1b70b3658a2dba7b&key=WYLTVT5U83ADZXHV"
+filesource="https://libgen.la/get.php?md5=8638619c05f6042d1b70b3658a2dba7b&key=L2DB0W9DMNOLOX4O"
+ #filesource="https://libgen.la/get.php?md5=8638619c05f6042d1b70b3658a2dba7b&key=WYLTVT5U83ADZXHV"
  if curl -fL -O -C - --retry 50 --retry-delay 5 --retry-all-errors "$filesource"; then
         echo "Download complete!"
         break
