@@ -6,9 +6,18 @@ import re
 import sys
 import os
 
-#NOTE: For Windows
+#For Windows
 #INSTALL BEAUTIFUL SOUP WITH PIP and you can do this interactively with PowerShell core or your built-in PowerShell: 
 #python -m pip install --user requests beautifulsoup4
+
+#For Linux
+
+# Option 1: Install via apt (system packages)
+sudo apt update
+sudo apt install python3-pip python3-bs4 python3-requests
+
+# Option 2: Install via pip (user/local install, recommended for latest versions)
+python3 -m pip install --user requests beautifulsoup4
 
 
 def get_fresh_libgen_download_url(md5: str) -> str | None:
