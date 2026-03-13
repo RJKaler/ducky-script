@@ -6,6 +6,7 @@ import re
 import sys
 import os
 
+#NOTE: For Windows
 #INSTALL BEAUTIFUL SOUP WITH PIP and you can do this interactively with PowerShell core or your built-in PowerShell: 
 #python -m pip install --user requests beautifulsoup4
 
