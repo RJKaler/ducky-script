@@ -6,6 +6,9 @@ import re
 import sys
 import os
 
+#INSTALL BEAUTIFUL SOUP WITH PIP and you can do this interactively with PowerShell core or your built-in PowerShell: 
+#python -m pip install --user requests beautifulsoup4
+
 
 def get_fresh_libgen_download_url(md5: str) -> str | None:
     """Returns the current working get.php URL with fresh key."""
