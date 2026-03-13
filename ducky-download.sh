@@ -10,8 +10,6 @@
 #Tested on Kubuntu using Ubuntu kernel. Version: 
 # 6.14.0-37-generic #37~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 10:25:38 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
 
-
-
 #   curl -L -O "$filesource"  || echo 'error'
 
 while :
