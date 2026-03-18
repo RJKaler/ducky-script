@@ -13,7 +13,7 @@ If (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     Write-Host "Running as Administrator — proceeding..."
 }
 
-# Always report and ensure execution policy allows unsigned local scripts
+# Check and report execution policy (always print current state)
 Write-Host "Checking execution policy..."
 $effectivePolicy = Get-ExecutionPolicy
 Write-Host "Current effective execution policy: $effectivePolicy"
@@ -24,14 +24,14 @@ If ($effectivePolicy -in $allowedPolicies) {
     Write-Host "Execution policy is already permissive — unsigned local scripts are allowed. Good to go."
 } Else {
     Write-Host "Current policy ($effectivePolicy) may block unsigned scripts!"
-    Write-Host "Updating to RemoteSigned for CurrentUser scope (recommended for dev/payload work)..."
+    Write-Host "Updating to RemoteSigned for CurrentUser scope..."
     try {
         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
         Write-Host "Execution policy updated to RemoteSigned (CurrentUser)."
         Write-Host "Local unsigned scripts can now run; downloaded scripts may still require Unblock-File."
     } catch {
         Write-Error "Failed to update execution policy: $($_.Exception.Message)"
-        Write-Host "Please run manually as admin: Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force"
+        Write-Host "Please run manually: Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force"
         exit 1
     }
 }
@@ -40,7 +40,7 @@ If ($effectivePolicy -in $allowedPolicies) {
 If (-not (Get-Command pwsh -ErrorAction SilentlyContinue)) {
     Write-Host "PowerShell Core not found — installing..."
     winget install --id Microsoft.PowerShell --source winget --silent --accept-package-agreements --accept-source-agreements
-    Start-Sleep -Seconds 3  # Brief pause to let PATH/env settle
+    Start-Sleep -Seconds 3  # Give PATH and environment time to update
 } Else {
     Write-Host "PowerShell Core (pwsh) is already installed — skipping installation."
 }
@@ -51,9 +51,13 @@ $pwshPath = "$pwshDir\pwsh.exe"
 If (Test-Path $pwshPath) {
     Write-Host "PowerShell Core installed successfully at $pwshPath."
     
-    # Optional: show version for extra confirmation
-    $version = pwsh -NoProfile -Command '$PSVersionTable.PSVersion.ToString()' -ErrorAction SilentlyContinue
-    if ($version) { Write-Host "Detected version: $version" }
+    # Attempt to get version (safe invocation)
+    $versionOutput = pwsh -NoProfile -Command '$PSVersionTable.PSVersion.ToString()' 2>$null
+    if ($versionOutput) {
+        Write-Host "Detected version: $versionOutput"
+    } Else {
+        Write-Host "Version check ran but returned no output."
+    }
     
     # Add pwsh to current user's PATH if not already present
     $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
@@ -64,7 +68,7 @@ If (Test-Path $pwshPath) {
         Write-Host "PowerShell 7 directory already present in current user's PATH."
     }
 } Else {
-    Write-Error "PowerShell Core installation failed! pwsh.exe not found at $pwshPath"
+    Write-Error "PowerShell Core installation failed!"
     exit 1
 }
 
