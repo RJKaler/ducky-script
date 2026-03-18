@@ -4,6 +4,8 @@
 # Filename: Install-PowerShellCore.ps1
 # Purpose: Install PowerShell Core using winget and add it to user PATH for account 'tuffs'
 
+#PROPER SCOPE: Run as Administrator 
+
 # Step 1: Check if winget is available
 if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
     Write-Host "winget not found. Please install Windows Package Manager first."
