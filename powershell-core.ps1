@@ -6,33 +6,23 @@
 
 #PROPER SCOPE: Run as Administrator 
 
-# Step 1: Check if winget is available
-if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-    Write-Host "winget not found. Please install Windows Package Manager first."
+# Check for admin
+If (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Error "Script must be run as Administrator!"
     exit 1
-}
-
-# Step 2: Search for latest stable PowerShell
-Write-Host "Searching for PowerShell Core..."
-$pwshInfo = winget search --id Microsoft.PowerShell | Select-String -Pattern "Microsoft.PowerShell\s+\d" 
-if (-not $pwshInfo) {
-    Write-Host "PowerShell not found in winget sources."
-    exit 1
-}
-
-# Step 3: Install PowerShell 7 stable
-Write-Host "Installing PowerShell Core..."
-winget install --id Microsoft.PowerShell --source winget -h
-
-# Step 4: Add PowerShell folder to user PATH (persistent for 'tuffs')
-$pwshFolder = "${env:ProgramFiles}\PowerShell\7"
-if (-not ($env:PATH -split ";" | Where-Object { $_ -eq $pwshFolder })) {
-    Write-Host "Adding PowerShell folder to user PATH..."
-    [Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$pwshFolder", "User")
 } else {
-    Write-Host "PowerShell folder already in PATH."
+    Write-Host "Running as Administrator — proceeding..."
 }
 
-# Step 5: Verify installation
-Write-Host "Verifying installation..."
-& "$pwshFolder\pwsh.exe" -v
+# Check if PowerShell Core (pwsh) is installed
+If (-not (Get-Command pwsh -ErrorAction SilentlyContinue)) {
+    Write-Host "PowerShell Core not found — installing..."
+    winget install --id Microsoft.PowerShell --source winget --silent --accept-package-agreements --accept-source-agreements
+}
+
+# Verify installation
+If (-not (Get-Command pwsh -ErrorAction SilentlyContinue)) {
+    Write-Error "PowerShell Core installation failed!"
+} else {
+    Write-Host "PowerShell Core installed successfully."
+}
