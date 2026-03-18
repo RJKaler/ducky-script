@@ -6,22 +6,6 @@ import re
 import sys
 import os
 
-#For Windows
-#INSTALL BEAUTIFUL SOUP WITH PIP and you can do this interactively with PowerShell core or your built-in PowerShell: 
-#python -m pip install --user requests beautifulsoup4
-
-#For Linux
-
-# Option 1: Install via apt (system packages)
-#sudo apt update
-#sudo apt install python3-pip python3-bs4 python3-requests
-# Option 2: Install via pip (user/local install, recommended for latest versions)
-#python3 -m pip install --user requests beautifulsoup4
-#Mark as executable: 
-#chmod +x ./rubber-ducky-download.py
-#Run the script: 
-#./rubber-ducky-download.py
-
 
 def get_fresh_libgen_download_url(md5: str) -> str | None:
     """Returns the current working get.php URL with fresh key."""
@@ -70,10 +54,8 @@ def download_file(url: str, md5: str):
     with requests.get(url, headers=headers, stream=True, timeout=60) as r:
         r.raise_for_status()
 
-        # Extract filename from Content-Disposition header
-        cd = r.headers.get("Content-Disposition", "")
-        filename_match = re.findall('filename="?([^"]+)"?', cd)
-        filename = filename_match[0] if filename_match else f"{md5}.unknown"
+        # Force filename
+        filename = "Ducky-USB-MANUAL.pdf"
 
         download_path = os.path.join(os.getcwd(), filename)
 
