@@ -1,5 +1,7 @@
 #!/bin/bash -e 
 
+#INSTALL MDK4
+
 sudo apt update && \
   sudo apt upgrade -y &&  
 
